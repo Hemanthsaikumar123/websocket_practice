@@ -11,14 +11,22 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+  console.log("User connected");
+
+  socket.on("join",(username)=>{
+    socket.username = username;
+    console.log("User joined: " + username);
+  })
 
   socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+    io.emit("chat message", {
+      username: socket.username,
+      message: msg,
+    });
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected");
+    console.log("User disconnected: " + socket.username);
   });
 });
 
